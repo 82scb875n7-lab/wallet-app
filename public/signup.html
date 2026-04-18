@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Signup</title>
+  <style>
+    body { font-family: Arial; background:#0a1f44; color:white; text-align:center; margin-top:100px; }
+    input { display:block; width:80%; margin:10px auto; padding:12px; border-radius:8px; border:none; }
+    button { width:85%; padding:12px; background:#1e90ff; color:white; border:none; border-radius:8px; }
+  </style>
+</head>
+<body>
+
+<h2>Create Account</h2>
+
+<input id="user" placeholder="Username">
+<input id="pass" type="password" placeholder="Password">
+
+<button onclick="signup()">Create Account</button>
+
+<script>
+function signup(){
+  let u = document.getElementById("user").value;
+  let p = document.getElementById("pass").value;
+
+  let users = JSON.parse(localStorage.getItem("users")) || {};
+
+  if(users[u]){
+    alert("User already exists");
+    return;
+  }
+
+  users[u] = {
+    password: p,
+    balance: 10000,
+    history: []
+  };
+
+  localStorage.setItem("users", JSON.stringify(users));
+
+  alert("Account created");
+  window.location = "login.html";
+}
+</script>
+
+</body>
+</html>
