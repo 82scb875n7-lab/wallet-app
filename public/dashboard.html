@@ -3,50 +3,13 @@
 <head>
   <title>Dashboard</title>
   <style>
-    body {
-      margin: 0;
-      font-family: Arial;
-      background: #f4f6f8;
-    }
-
-    .header {
-      background: #1b263b;
-      color: white;
-      padding: 20px;
-      text-align: center;
-    }
-
-    .container {
-      padding: 20px;
-    }
-
-    .card {
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      margin-bottom: 20px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-
-    .balance {
-      font-size: 28px;
-      font-weight: bold;
-    }
-
-    button {
-      width: 100%;
-      padding: 12px;
-      margin-top: 10px;
-      border: none;
-      border-radius: 8px;
-      background: #1b263b;
-      color: white;
-      font-weight: bold;
-    }
-
-    button:hover {
-      background: #415a77;
-    }
+    body { margin:0; font-family:Arial; background:#f2f4f7;}
+    .header { background:#0b3d91; color:white; padding:15px; text-align:center;}
+    .card { background:white; margin:15px; padding:15px; border-radius:10px;}
+    .balance { font-size:28px; font-weight:bold; }
+    .btn { width:100%; padding:10px; margin-top:8px; border:none; border-radius:6px; background:#0b3d91; color:white;}
+    .nav { position:fixed; bottom:0; width:100%; display:flex; background:white; border-top:1px solid #ccc;}
+    .nav button { flex:1; padding:10px; border:none; background:none;}
   </style>
 </head>
 <body>
@@ -55,50 +18,110 @@
   <h2>My Bank</h2>
 </div>
 
-<div class="container">
-
+<!-- HOME PAGE -->
+<div id="home">
   <div class="card">
     <p>Welcome, <span id="user"></span></p>
-    <p class="balance">$<span id="balance"></span></p>
+    <div class="balance">$<span id="balance"></span></div>
   </div>
 
   <div class="card">
-    <button onclick="withdraw()">Withdraw $100</button>
-    <button onclick="logout()">Logout</button>
+    <button class="btn" onclick="addMoney()">Add Money</button>
+    <button class="btn" onclick="transfer()">Transfer</button>
+    <button class="btn" onclick="buyBTC()">Buy Bitcoin</button>
+    <button class="btn" onclick="withdraw()">Withdraw</button>
   </div>
 
+  <div class="card">
+    <h3>Transaction History</h3>
+    <div id="history"></div>
+  </div>
+</div>
+
+<!-- REWARDS PAGE -->
+<div id="rewards" style="display:none">
+  <div class="card">
+    <h3>Rewards</h3>
+    <p>You have 1200 points 🎁</p>
+  </div>
+</div>
+
+<!-- ME PAGE -->
+<div id="me" style="display:none">
+  <div class="card">
+    <h3>My Account</h3>
+    <p>Username: <span id="meUser"></span></p>
+    <button class="btn" onclick="logout()">Logout</button>
+  </div>
+</div>
+
+<!-- NAVIGATION -->
+<div class="nav">
+  <button onclick="showPage('home')">Home</button>
+  <button onclick="showPage('rewards')">Rewards</button>
+  <button onclick="showPage('me')">Me</button>
 </div>
 
 <script>
 let username = localStorage.getItem("username");
 let balance = localStorage.getItem("balance");
+let history = JSON.parse(localStorage.getItem("history") || "[]");
 
 document.getElementById("user").innerText = username;
 document.getElementById("balance").innerText = balance;
+document.getElementById("meUser").innerText = username;
+
+function updateHistory() {
+  let html = "";
+  history.forEach(h => {
+    html += "<p>" + h + "</p>";
+  });
+  document.getElementById("history").innerHTML = html;
+}
+updateHistory();
+
+function save() {
+  localStorage.setItem("balance", balance);
+  localStorage.setItem("history", JSON.stringify(history));
+}
+
+function addMoney() {
+  balance = Number(balance) + 1000;
+  history.push("Credit: +$1000");
+  save();
+  location.reload();
+}
+
+function transfer() {
+  history.push("Debit: Transfer $200");
+  balance -= 200;
+  save();
+  location.reload();
+}
+
+function buyBTC() {
+  history.push("Debit: Bought Bitcoin $300");
+  balance -= 300;
+  save();
+  location.reload();
+}
 
 function withdraw() {
-  fetch('/withdraw', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({
-      username: username,
-      amount: 100
-    })
-  })
-  .then(res => res.json())
-  .then(data => {
-    alert(data.message);
-
-    if (data.success) {
-      localStorage.setItem("balance", data.balance);
-      document.getElementById("balance").innerText = data.balance;
-    }
-  });
+  history.push("Pending withdrawal request");
+  save();
+  alert("Withdrawal is pending and being processed.");
 }
 
 function logout() {
   localStorage.clear();
   window.location.href = "login.html";
+}
+
+function showPage(page) {
+  document.getElementById("home").style.display = "none";
+  document.getElementById("rewards").style.display = "none";
+  document.getElementById("me").style.display = "none";
+  document.getElementById(page).style.display = "block";
 }
 </script>
 
