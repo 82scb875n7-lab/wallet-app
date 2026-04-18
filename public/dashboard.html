@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dashboard</title>
+</head>
+<body>
+
+<h2>Welcome</h2>
+
+<p>Your balance: $<span id="balance"></span></p>
+
+<input type="number" id="amount" placeholder="Withdraw amount"><br><br>
+<button onclick="withdraw()">Withdraw</button>
+
+<p id="msg"></p>
+
+<script>
+document.getElementById("balance").innerText = localStorage.getItem("balance");
+
+async function withdraw() {
+  const amount = Number(document.getElementById("amount").value);
+  const username = localStorage.getItem("username");
+
+  const res = await fetch("/withdraw", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ username, amount })
+  });
+
+  const data = await res.json();
+
+  if (data.success) {
+    document.getElementById("msg").innerText = "Withdrawal successful 💰";
+    document.getElementById("balance").innerText = data.balance;
+    localStorage.setItem("balance", data.balance);
+  } else {
+    document.getElementById("msg").innerText = "Insufficient balance ❌";
+  }
+}
+</script>
+
+</body>
+</html>
