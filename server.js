@@ -1,12 +1,14 @@
 const express = require('express');
+const path = require('path');
 const app = express();
 
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', (req, res) => {
-  res.redirect('/login.html');
+  res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
 
-app.listen(3000, () => {
-  console.log('Server running');
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log('Server running on port ' + PORT);
 });
