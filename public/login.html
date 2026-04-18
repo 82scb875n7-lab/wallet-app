@@ -1,38 +1,21 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Login</title>
-  <style>
-    body { font-family: Arial; background:#0b3d91; display:flex; justify-content:center; align-items:center; height:100vh; margin:0;}
-    .card { background:white; padding:25px; border-radius:10px; width:280px; text-align:center;}
-    input { width:100%; padding:10px; margin:10px 0; border-radius:6px; border:1px solid #ccc;}
-    button { width:100%; padding:10px; background:#0b3d91; color:white; border:none; border-radius:6px;}
-  </style>
-</head>
-<body>
-
-<div class="card">
-  <h2>Bank Login</h2>
-  <input id="username" placeholder="Username">
-  <input id="password" type="password" placeholder="Password">
-  <button onclick="login()">Login</button>
-</div>
-
 <script>
 function login() {
-  let user = document.getElementById("username").value;
-  let pass = document.getElementById("password").value;
+  let username = document.getElementById("username").value;
+  let password = document.getElementById("password").value;
 
-  if(user && pass){
-    localStorage.setItem("username", user);
-    localStorage.setItem("balance", 5000);
-    localStorage.setItem("history", JSON.stringify([]));
-    window.location.href = "dashboard.html";
-  } else {
-    alert("Enter login details");
-  }
+  fetch('/login', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ username, password })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if(data.success){
+      localStorage.setItem("username", data.username);
+      window.location.href = "dashboard.html";
+    } else {
+      alert("Wrong login");
+    }
+  });
 }
 </script>
-
-</body>
-</html>
