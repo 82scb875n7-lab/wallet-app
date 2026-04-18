@@ -4,20 +4,20 @@
   <title>Dashboard</title>
   <style>
     body { font-family: Arial; background:#f5f7fa; margin:0; }
-    .top { background:#0a1f44; color:white; padding:15px; }
-    .card { background:white; margin:20px; padding:20px; border-radius:10px; }
-    button { width:100%; padding:12px; margin-top:10px; background:#0a1f44; color:white; border:none; border-radius:8px; }
+    .top { background:#0a1f44; color:#fff; padding:15px; }
+    .card { background:#fff; margin:20px; padding:20px; border-radius:10px; }
+    button { width:100%; padding:12px; margin-top:10px; background:#0a1f44; color:#fff; border:none; border-radius:8px; }
   </style>
 </head>
 <body>
 
 <div class="top">
-  Welcome, <span id="name"></span>
+  Welcome, <span id="name">User</span>
 </div>
 
 <div class="card">
-  <h2>Balance: $<span id="bal"></span></h2>
-  <button onclick="goWithdraw()">Withdraw</button>
+  <h2>Balance: $<span id="bal">0</span></h2>
+  <button onclick="window.location='withdraw.html'">Withdraw Funds</button>
 </div>
 
 <div class="card">
@@ -26,25 +26,22 @@
 </div>
 
 <script>
-let currentUser = localStorage.getItem("currentUser");
-let users = JSON.parse(localStorage.getItem("users"));
+const user = localStorage.getItem("user") || "User";
+document.getElementById("name").innerText = user;
 
-document.getElementById("name").innerText = currentUser;
+// balance
+let balance = parseInt(localStorage.getItem("balance")) || 10000;
+document.getElementById("bal").innerText = balance;
 
-let userData = users[currentUser];
-
-document.getElementById("bal").innerText = userData.balance;
-
+// history
+let history = JSON.parse(localStorage.getItem("history")) || [];
 let box = document.getElementById("history");
-userData.history.forEach(t => {
+
+history.forEach(t => {
   let p = document.createElement("p");
   p.innerText = t;
   box.appendChild(p);
 });
-
-function goWithdraw(){
-  window.location = "withdraw.html";
-}
 </script>
 
 </body>
