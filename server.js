@@ -1,13 +1,13 @@
 const express = require('express');
 const app = express();
 
-// VERY IMPORTANT for Render
+// IMPORTANT: use Render port
 const PORT = process.env.PORT || 3000;
 
-// Serve your HTML files
+// Serve static files (your HTML)
 app.use(express.static('public'));
 
-// Redirect root to login page
+// Redirect home to login page
 app.get('/', (req, res) => {
   res.redirect('/login.html');
 });
