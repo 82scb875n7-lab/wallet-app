@@ -2,51 +2,15 @@
 <html>
 <head>
   <title>Dashboard</title>
-
   <style>
-    body {
-      font-family: Arial;
-      background: #f5f7fa;
-      margin: 0;
-    }
-
-    .top {
-      background: #0a1f44;
-      color: white;
-      padding: 15px;
-      font-size: 18px;
-    }
-
-    .card {
-      background: white;
-      margin: 20px;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-
-    .balance {
-      font-size: 24px;
-      margin-bottom: 15px;
-    }
-
-    button {
-      width: 100%;
-      padding: 12px;
-      background: #0a1f44;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-    }
-
-    .history p {
-      margin: 5px 0;
-      color: #333;
-    }
+    body { font-family: Arial; background:#f5f7fa; margin:0; }
+    .top { background:#0a1f44; color:#fff; padding:15px; }
+    .card { background:#fff; margin:20px; padding:20px; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,.1); }
+    .balance { font-size:24px; margin-bottom:15px; }
+    button { width:100%; padding:12px; margin-top:10px; background:#0a1f44; color:#fff; border:none; border-radius:8px; }
+    .history p { margin:6px 0; }
   </style>
 </head>
-
 <body>
 
 <div class="top">
@@ -54,10 +18,9 @@
 </div>
 
 <div class="card">
-  <div class="balance">Balance: $10,000</div>
-
-  <!-- ONLY WITHDRAW BUTTON -->
-  <button onclick="window.location='withdraw.html'">Withdraw Funds</button>
+  <div class="balance">Balance: $<span id="bal">10000</span></div>
+  <button onclick="goWithdraw()">Withdraw Funds</button>
+  <button onclick="window.location='admin.html'">Admin Panel</button>
 </div>
 
 <div class="card history">
@@ -69,15 +32,22 @@
 const user = localStorage.getItem("user");
 document.getElementById("name").innerText = user || "User";
 
-// Load history
+// balance
+let bal = parseInt(localStorage.getItem("balance")) || 10000;
+document.getElementById("bal").innerText = bal;
+
+// history
 let history = JSON.parse(localStorage.getItem("history")) || [];
 let box = document.getElementById("history");
-
 history.forEach(t => {
   let p = document.createElement("p");
   p.innerText = t;
   box.appendChild(p);
 });
+
+function goWithdraw(){
+  window.location = "withdraw.html";
+}
 </script>
 
 </body>
