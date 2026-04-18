@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Withdrawal Pending</title>
+
+  <style>
+    body {
+      font-family: Arial;
+      background: #f5f7fa;
+      text-align: center;
+      padding: 40px;
+    }
+
+    .card {
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      max-width: 400px;
+      margin: auto;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      color: #0a1f44;
+    }
+
+    p {
+      color: #555;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    .fix {
+      background: #1e90ff;
+      color: white;
+    }
+
+    .cancel {
+      background: gray;
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="card">
+  <h2>Withdrawal Pending</h2>
+
+  <p>
+    Kindly contact your account provider to resolve the issue before your withdrawal can be completed.
+  </p>
+
+  <button class="fix" onclick="fixIssue()">Fix Issue</button>
+  <button class="cancel" onclick="cancel()">Cancel</button>
+</div>
+
+<script>
+function fixIssue(){
+  const email = "mywalletissuesrevolve@gmail.com";
+  const subject = "Fix Withdrawal Issue";
+  const body = "Hello, I need help fixing my withdrawal issue.";
+
+  window.location.href =
+    `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
+function cancel(){
+  window.location = "dashboard.html";
+}
+</script>
+
+</body>
+</html>
