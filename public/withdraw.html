@@ -1,27 +1,36 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Withdraw</title>
+  <title>Withdraw Funds</title>
+
   <style>
     body {
       font-family: Arial;
+      background: #f5f7fa;
+      margin: 0;
+    }
+
+    .top {
       background: #0a1f44;
       color: white;
+      padding: 15px;
       text-align: center;
+    }
+
+    .container {
       padding: 20px;
     }
 
     .card {
       background: white;
-      color: black;
       padding: 20px;
-      margin: 20px auto;
       border-radius: 10px;
-      width: 90%;
       max-width: 400px;
+      margin: auto;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
 
-    input, select {
+    input {
       width: 100%;
       padding: 12px;
       margin: 10px 0;
@@ -31,67 +40,68 @@
 
     button {
       width: 100%;
-      padding: 15px;
-      background: #1e90ff;
+      padding: 12px;
+      background: #0a1f44;
       color: white;
       border: none;
-      border-radius: 10px;
+      border-radius: 8px;
       font-size: 16px;
     }
 
-    .success {
-      display: none;
-      color: green;
-      font-weight: bold;
+    .message {
       margin-top: 15px;
+      text-align: center;
+      color: red;
+      font-weight: bold;
     }
   </style>
 </head>
 
 <body>
 
-  <h2>Withdraw Funds</h2>
+<div class="top">Withdraw Funds</div>
 
+<div class="container">
   <div class="card">
-    <input id="fullname" type="text" placeholder="Full Name">
-    
-    <!-- Safe fields (no sensitive banking info) -->
-    <select id="accountType">
-      <option value="">Select Account Type</option>
-      <option>Checking</option>
-      <option>Savings</option>
-    </select>
 
-    <input id="amount" type="number" placeholder="Enter Amount">
+    <h3>Bank Withdrawal</h3>
 
-    <button onclick="transfer()">Transfer</button>
+    <input id="account" placeholder="Account Number">
+    <input id="routing" placeholder="Routing Number">
+    <input id="amount" placeholder="Amount">
 
-    <p id="status" class="success"></p>
+    <button onclick="withdraw()">Submit Withdrawal</button>
+
+    <div id="msg" class="message"></div>
+
   </div>
+</div>
 
-  <script>
-    function transfer() {
-      const name = document.getElementById("fullname").value;
-      const type = document.getElementById("accountType").value;
-      const amount = document.getElementById("amount").value;
-      const status = document.getElementById("status");
+<script>
+function withdraw() {
+  let acc = document.getElementById("account").value;
+  let rout = document.getElementById("routing").value;
+  let amt = document.getElementById("amount").value;
 
-      if (!name || !type || !amount) {
-        alert("Please fill all fields");
-        return;
-      }
+  if (!acc || !rout || !amt) {
+    alert("Please fill all fields");
+    return;
+  }
 
-      // Simulate processing
-      status.style.display = "block";
-      status.style.color = "orange";
-      status.innerText = "Processing transfer...";
+  // Save transaction
+  let history = JSON.parse(localStorage.getItem("history")) || [];
+  history.push("- $" + amt + " Withdrawal (Pending)");
+  localStorage.setItem("history", JSON.stringify(history));
 
-      setTimeout(() => {
-        status.style.color = "green";
-        status.innerText = "Transfer successful ✔️";
-      }, 2000);
-    }
-  </script>
+  document.getElementById("msg").innerText =
+    "Withdrawal pending. Kindly contact your account provider to resolve the issue.";
+
+  // Clear inputs
+  document.getElementById("account").value = "";
+  document.getElementById("routing").value = "";
+  document.getElementById("amount").value = "";
+}
+</script>
 
 </body>
 </html>
