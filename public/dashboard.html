@@ -14,6 +14,7 @@
       background: #0a1f44;
       color: white;
       padding: 15px;
+      font-size: 18px;
     }
 
     .card {
@@ -48,18 +49,27 @@
     <button onclick="alert('Enter account number')">Transfer</button>
     <button onclick="alert('Paste BTC wallet')">Buy Bitcoin</button>
 
-    <!-- ✅ WORKING WITHDRAW BUTTON -->
+    <!-- Withdraw goes to withdraw page -->
     <button onclick="window.location='withdraw.html'">Withdraw</button>
   </div>
 
   <div class="card">
     <h3>Transaction History</h3>
-    <p>+ $500 Deposit</p>
-    <p>- $200 Transfer</p>
+    <div id="history">
+      <p>+ $500 Deposit</p>
+      <p>- $200 Transfer</p>
+    </div>
   </div>
 
   <script>
-    document.getElementById("name").innerText = "User";
+    // Show logged-in user name
+    const user = localStorage.getItem("user");
+
+    if (user) {
+      document.getElementById("name").innerText = user;
+    } else {
+      document.getElementById("name").innerText = "User";
+    }
   </script>
 
 </body>
