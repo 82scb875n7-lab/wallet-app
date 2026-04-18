@@ -1,21 +1,28 @@
-<script>
-function login() {
-  let username = document.getElementById("username").value;
-  let password = document.getElementById("password").value;
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login</title>
+</head>
+<body style="font-family: Arial; text-align:center; margin-top:100px;">
 
-  fetch('/login', {
-    method: 'POST',
-    headers: {'Content-Type':'application/json'},
-    body: JSON.stringify({ username, password })
-  })
-  .then(res => res.json())
-  .then(data => {
-    if(data.success){
-      localStorage.setItem("username", data.username);
-      window.location.href = "dashboard.html";
-    } else {
-      alert("Wrong login");
+  <h1>Bank Login</h1>
+
+  <input type="text" id="username" placeholder="Username"><br><br>
+  <input type="password" id="password" placeholder="Password"><br><br>
+
+  <button onclick="login()">Login</button>
+
+  <script>
+    function login() {
+      const user = document.getElementById('username').value;
+      if (user) {
+        localStorage.setItem('user', user);
+        window.location.href = 'dashboard.html';
+      } else {
+        alert('Enter username');
+      }
     }
-  });
-}
-</script>
+  </script>
+
+</body>
+</html>
