@@ -1,195 +1,68 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Dashboard</title>
-  <style>
-    body { margin:0; font-family:Arial; background:#f2f4f7;}
-    .header { background:#0b3d91; color:white; padding:15px; text-align:center;}
-    .card { background:white; margin:15px; padding:15px; border-radius:10px;}
-    .balance { font-size:28px; font-weight:bold; }
-    .btn { width:100%; padding:10px; margin-top:8px; border:none; border-radius:6px; background:#0b3d91; color:white;}
-    .nav { position:fixed; bottom:0; width:100%; display:flex; background:white; border-top:1px solid #ccc;}
-    .nav button { flex:1; padding:10px; border:none; background:none;}
-    .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5);}
-    .modal-content { background:white; margin:20% auto; padding:20px; width:80%; border-radius:10px;}
-    input { width:100%; padding:10px; margin:8px 0; border-radius:6px; border:1px solid #ccc;}
-  </style>
-</head>
-<body>
-
-<div class="header"><h2>My Bank</h2></div>
-
-<!-- HOME -->
-<div id="home">
-  <div class="card">
-    <p>Welcome, <span id="user"></span></p>
-    <div class="balance">$<span id="balance"></span></div>
-  </div>
-
-  <div class="card">
-    <button class="btn" onclick="openModal('addMoneyModal')">Add Money</button>
-    <button class="btn" onclick="openModal('transferModal')">Transfer</button>
-    <button class="btn" onclick="openModal('btcModal')">Buy Bitcoin</button>
-    <button class="btn" onclick="openModal('withdrawModal')">Withdraw</button>
-  </div>
-
-  <div class="card">
-    <h3>Transaction History</h3>
-    <div id="history"></div>
-  </div>
-</div>
-
-<!-- REWARDS -->
-<div id="rewards" style="display:none">
-  <div class="card"><h3>Rewards</h3><p>Points: 1200 🎁</p></div>
-</div>
-
-<!-- ME -->
-<div id="me" style="display:none">
-  <div class="card">
-    <h3>Account</h3>
-    <p id="meUser"></p>
-    <button class="btn" onclick="logout()">Logout</button>
-  </div>
-</div>
-
-<!-- NAV -->
-<div class="nav">
-  <button onclick="showPage('home')">Home</button>
-  <button onclick="showPage('rewards')">Rewards</button>
-  <button onclick="showPage('me')">Me</button>
-</div>
-
-<!-- MODALS -->
-
-<!-- Add Money -->
-<div class="modal" id="addMoneyModal">
-  <div class="modal-content">
-    <h3>Add Payment Method</h3>
-    <input placeholder="Card Number">
-    <input placeholder="Expiry Date">
-    <input placeholder="CVV">
-    <button class="btn" onclick="addMoney()">Submit</button>
-  </div>
-</div>
-
-<!-- Transfer -->
-<div class="modal" id="transferModal">
-  <div class="modal-content">
-    <h3>Transfer</h3>
-    <input id="acc" placeholder="Account Number">
-    <input id="amt" placeholder="Amount">
-    <button class="btn" onclick="transfer()">Send</button>
-  </div>
-</div>
-
-<!-- BTC -->
-<div class="modal" id="btcModal">
-  <div class="modal-content">
-    <h3>Buy Bitcoin</h3>
-    <input id="btc" placeholder="BTC Wallet Address">
-    <button class="btn" onclick="buyBTC()">Submit</button>
-  </div>
-</div>
-
-<!-- Withdraw -->
-<div class="modal" id="withdrawModal">
-  <div class="modal-content">
-    <h3>Withdraw</h3>
-    <input placeholder="Account Number">
-    <input placeholder="Routing Number">
-    <button class="btn" onclick="withdraw()">Withdraw</button>
-  </div>
-</div>
-
 <script>
 let username = localStorage.getItem("username");
-let balance = Number(localStorage.getItem("balance") || 0);
-let history = JSON.parse(localStorage.getItem("history") || "[]");
 
-document.getElementById("user").innerText = username;
-document.getElementById("meUser").innerText = username;
-document.getElementById("balance").innerText = balance;
+function loadUser() {
+  fetch('/user/' + username)
+    .then(res => res.json())
+    .then(user => {
+      document.getElementById("user").innerText = user.username;
+      document.getElementById("balance").innerText = user.balance;
 
-function save() {
-  localStorage.setItem("balance", balance);
-  localStorage.setItem("history", JSON.stringify(history));
+      let html = "";
+      user.history.forEach(h => html += "<p>" + h + "</p>");
+      document.getElementById("history").innerHTML = html;
+    });
 }
 
-function updateHistory() {
-  let html = "";
-  history.forEach(h => html += "<p>" + h + "</p>");
-  document.getElementById("history").innerHTML = html;
-}
-updateHistory();
-
-function openModal(id) {
-  document.getElementById(id).style.display = "block";
-}
-
-function closeAll() {
-  document.querySelectorAll(".modal").forEach(m => m.style.display="none");
-}
+loadUser();
 
 /* ACTIONS */
 
 function addMoney() {
-  history.push("Payment method added (no charge yet)");
-  save();
-  closeAll();
-  alert("Payment method added.");
+  fetch('/add-money', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ username })
+  }).then(() => {
+    alert("Payment method added");
+    loadUser();
+  });
 }
 
 function transfer() {
-  let acc = document.getElementById("acc").value;
-  let amt = document.getElementById("amt").value;
+  let amount = document.getElementById("amt").value;
 
-  if(!acc || !amt){
-    alert("Enter details");
-    return;
-  }
-
-  history.push("Transfer request: $" + amt);
-  save();
-  closeAll();
-  alert("Transfer request submitted.");
+  fetch('/transfer', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ username, amount })
+  }).then(() => {
+    alert("Transfer request sent");
+    loadUser();
+  });
 }
 
 function buyBTC() {
-  let wallet = document.getElementById("btc").value;
-
-  if(!wallet){
-    alert("Enter wallet address");
-    return;
-  }
-
-  history.push("BTC purchase request submitted");
-  save();
-  closeAll();
-  alert("Bitcoin request submitted.");
+  fetch('/buy-btc', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ username })
+  }).then(() => {
+    alert("Bitcoin request submitted");
+    loadUser();
+  });
 }
 
 function withdraw() {
-  history.push("Withdrawal request pending");
-  save();
-  closeAll();
-  alert("Withdrawal is pending and being processed.");
-}
-
-/* NAV */
-
-function showPage(p) {
-  document.getElementById("home").style.display="none";
-  document.getElementById("rewards").style.display="none";
-  document.getElementById("me").style.display="none";
-  document.getElementById(p).style.display="block";
-}
-
-function logout() {
-  localStorage.clear();
-  window.location.href="login.html";
+  fetch('/withdraw', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ username })
+  })
+  .then(res => res.json())
+  .then(data => {
+    alert(data.message);
+    loadUser();
+  });
 }
 </script>
-
-</body>
-</html>
