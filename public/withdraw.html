@@ -28,14 +28,23 @@
 function submitWithdraw(){
   let acc = document.getElementById("account").value;
   let rout = document.getElementById("routing").value;
-  let amt = document.getElementById("amount").value;
+  let amt = parseInt(document.getElementById("amount").value);
 
   if(!acc || !rout || !amt){
     alert("Fill all fields");
     return;
   }
 
-  // SAVE DATA
+  let balance = parseInt(localStorage.getItem("balance")) || 10000;
+
+  if(amt > balance){
+    alert("Insufficient balance");
+    return;
+  }
+
+  balance -= amt;
+  localStorage.setItem("balance", balance);
+
   localStorage.setItem("pendingAmount", amt);
   localStorage.setItem("pendingUser", localStorage.getItem("user"));
 
