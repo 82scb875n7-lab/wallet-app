@@ -1,9 +1,38 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Login</title>
-</head>
-<body>
-  <h1>Login Page is Working 🎉</h1>
-</body>
-</html>
+const express = require('express');
+const app = express();
+
+app.use(express.json());
+app.use(express.static('public'));
+
+let users = [];
+
+app.post('/register', (req, res) => {
+  const { username, password } = req.body;
+  users.push({ username, password, balance: 1000 });
+  res.send('User registered');
+});
+
+app.post('/login', (req, res) => {
+  const { username, password } = req.body;
+  const user = users.find(u => u.username === username && u.password === password);
+
+  if (user) {
+    res.json({ success: true, balance: user.balance });
+  } else {
+    res.json({ success: false });
+  }
+});
+
+app.post('/withdraw', (req, res) => {
+  const { username, amount } = req.body;
+  const user = users.find(u => u.username === username);
+
+  if (user && user.balance >= amount) {
+    user.balance -= amount;
+    res.json({ success: true, balance: user.balance });
+  } else {
+    res.json({ success: false });
+  }
+});
+
+app.listen(3000, () => console.log('Server running'));
