@@ -3,10 +3,10 @@ const app = express();
 
 const PORT = process.env.PORT || 3000;
 
-// Serve static files
+// Serve all files in public folder
 app.use(express.static(__dirname + '/public'));
 
-// Default route → login page
+// Default route
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/public/login.html');
 });
