@@ -1,84 +1,36 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Bank Login</title>
+  <title>Login</title>
   <style>
-    body {
-      margin: 0;
-      font-family: Arial;
-      background: #0d1b2a;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-
-    .card {
-      background: white;
-      padding: 30px;
-      border-radius: 12px;
-      width: 300px;
-      text-align: center;
-    }
-
-    h2 {
-      margin-bottom: 20px;
-    }
-
-    input {
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-    }
-
-    button {
-      width: 100%;
-      padding: 12px;
-      background: #1b263b;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-weight: bold;
-    }
-
-    button:hover {
-      background: #415a77;
-    }
+    body { font-family: Arial; background:#0b3d91; display:flex; justify-content:center; align-items:center; height:100vh; margin:0;}
+    .card { background:white; padding:25px; border-radius:10px; width:280px; text-align:center;}
+    input { width:100%; padding:10px; margin:10px 0; border-radius:6px; border:1px solid #ccc;}
+    button { width:100%; padding:10px; background:#0b3d91; color:white; border:none; border-radius:6px;}
   </style>
 </head>
 <body>
 
 <div class="card">
-  <h2>Secure Login</h2>
-
+  <h2>Bank Login</h2>
   <input id="username" placeholder="Username">
   <input id="password" type="password" placeholder="Password">
-
   <button onclick="login()">Login</button>
 </div>
 
 <script>
 function login() {
-  const username = document.getElementById("username").value;
-  const password = document.getElementById("password").value;
+  let user = document.getElementById("username").value;
+  let pass = document.getElementById("password").value;
 
-  fetch('/login', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({ username, password })
-  })
-  .then(res => res.json())
-  .then(data => {
-    if (data.success) {
-      localStorage.setItem("username", data.username);
-      localStorage.setItem("balance", data.balance);
-      window.location.href = "dashboard.html";
-    } else {
-      alert("Invalid login");
-    }
-  });
+  if(user && pass){
+    localStorage.setItem("username", user);
+    localStorage.setItem("balance", 5000);
+    localStorage.setItem("history", JSON.stringify([]));
+    window.location.href = "dashboard.html";
+  } else {
+    alert("Enter login details");
+  }
 }
 </script>
 
