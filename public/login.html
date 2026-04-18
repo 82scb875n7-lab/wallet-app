@@ -1,38 +1,43 @@
-const express = require('express');
-const app = express();
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login</title>
+</head>
+<body>
 
-app.use(express.json());
-app.use(express.static('public'));
+<h2>Login</h2>
 
-let users = [];
+<input type="text" id="username" placeholder="Username"><br><br>
+<input type="password" id="password" placeholder="Password"><br><br>
 
-app.post('/register', (req, res) => {
-  const { username, password } = req.body;
-  users.push({ username, password, balance: 1000 });
-  res.send('User registered');
-});
+<button onclick="login()">Login</button>
 
-app.post('/login', (req, res) => {
-  const { username, password } = req.body;
-  const user = users.find(u => u.username === username && u.password === password);
+<p id="message"></p>
 
-  if (user) {
-    res.json({ success: true, balance: user.balance });
+<script>
+async function login() {
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+
+  const res = await fetch("/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ username, password })
+  });
+
+  const data = await res.json();
+
+  if (data.success) {
+    localStorage.setItem("username", username);
+    localStorage.setItem("balance", data.balance);
+    window.location.href = "dashboard.html";
   } else {
-    res.json({ success: false });
+    document.getElementById("message").innerText = "Login failed ❌";
   }
-});
+}
+</script>
 
-app.post('/withdraw', (req, res) => {
-  const { username, amount } = req.body;
-  const user = users.find(u => u.username === username);
-
-  if (user && user.balance >= amount) {
-    user.balance -= amount;
-    res.json({ success: true, balance: user.balance });
-  } else {
-    res.json({ success: false });
-  }
-});
-
-app.listen(3000, () => console.log('Server running'));
+</body>
+</html>
