@@ -1,5 +1,41 @@
-app.use(express.static('public'));
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dashboard</title>
+  <style>
+    body { font-family: Arial; background:#f5f5f5; }
+    .top { background:#0a1f44; color:white; padding:15px; }
+    .card { background:white; margin:20px; padding:20px; border-radius:10px; }
+    button { padding:10px; margin:5px; }
+  </style>
+</head>
+<body>
 
-app.get('/', (req, res) => {
-  res.redirect('/login.html');
-});
+<div class="top">
+  Welcome, <span id="name"></span>
+</div>
+
+<div class="card">
+  <h2>Balance: $10,000</h2>
+  <button onclick="alert('Add payment method first')">Add Money</button>
+  <button onclick="alert('Enter account number')">Transfer</button>
+  <button onclick="alert('Paste BTC wallet')">Buy Bitcoin</button>
+  <button onclick="withdraw()">Withdraw</button>
+</div>
+
+<div class="card">
+  <h3>Transaction History</h3>
+  <p>+ $500 Deposit</p>
+  <p>- $200 Transfer</p>
+</div>
+
+<script>
+document.getElementById("name").innerText = localStorage.getItem("user");
+
+function withdraw(){
+  alert("Withdrawal pending. Contact support to complete.");
+}
+</script>
+
+</body>
+</html>
