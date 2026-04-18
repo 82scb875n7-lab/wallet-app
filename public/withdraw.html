@@ -35,12 +35,13 @@ function submitWithdraw(){
     return;
   }
 
-  // save pending transaction
+  // SAVE DATA
+  localStorage.setItem("pendingAmount", amt);
+  localStorage.setItem("pendingUser", localStorage.getItem("user"));
+
   let history = JSON.parse(localStorage.getItem("history")) || [];
   history.push("- $" + amt + " Withdrawal (Pending)");
   localStorage.setItem("history", JSON.stringify(history));
-
-  localStorage.setItem("pendingAmount", amt);
 
   window.location = "pending.html";
 }
