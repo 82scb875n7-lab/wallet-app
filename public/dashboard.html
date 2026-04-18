@@ -6,7 +6,7 @@
   <style>
     body {
       font-family: Arial;
-      background: #f4f4f4;
+      background: #f5f7fa;
       margin: 0;
     }
 
@@ -20,57 +20,65 @@
     .card {
       background: white;
       margin: 20px;
-      padding: 15px;
-      border-radius: 8px;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .balance {
+      font-size: 24px;
+      margin-bottom: 15px;
     }
 
     button {
-      padding: 10px;
-      margin: 5px;
-      border: none;
+      width: 100%;
+      padding: 12px;
       background: #0a1f44;
       color: white;
-      border-radius: 5px;
-      cursor: pointer;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    .history p {
+      margin: 5px 0;
+      color: #333;
     }
   </style>
 </head>
 
 <body>
 
-  <div class="top">
-    Welcome, <span id="name">User</span>
-  </div>
+<div class="top">
+  Welcome, <span id="name">User</span>
+</div>
 
-  <div class="card">
-    <h2>Balance: $10,000</h2>
+<div class="card">
+  <div class="balance">Balance: $10,000</div>
 
-    <button onclick="alert('Add payment method first')">Add Money</button>
-    <button onclick="alert('Enter account number')">Transfer</button>
-    <button onclick="alert('Paste BTC wallet')">Buy Bitcoin</button>
+  <!-- ONLY WITHDRAW BUTTON -->
+  <button onclick="window.location='withdraw.html'">Withdraw Funds</button>
+</div>
 
-    <!-- Withdraw goes to withdraw page -->
-    <button onclick="window.location='withdraw.html'">Withdraw</button>
-  </div>
+<div class="card history">
+  <h3>Transaction History</h3>
+  <div id="history"></div>
+</div>
 
-  <div class="card">
-    <h3>Transaction History</h3>
-    <div id="history">
-      <p>+ $500 Deposit</p>
-      <p>- $200 Transfer</p>
-    </div>
-  </div>
+<script>
+const user = localStorage.getItem("user");
+document.getElementById("name").innerText = user || "User";
 
-  <script>
-    // Show logged-in user name
-    const user = localStorage.getItem("user");
+// Load history
+let history = JSON.parse(localStorage.getItem("history")) || [];
+let box = document.getElementById("history");
 
-    if (user) {
-      document.getElementById("name").innerText = user;
-    } else {
-      document.getElementById("name").innerText = "User";
-    }
-  </script>
+history.forEach(t => {
+  let p = document.createElement("p");
+  p.innerText = t;
+  box.appendChild(p);
+});
+</script>
 
 </body>
 </html>
